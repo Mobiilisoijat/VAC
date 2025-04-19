@@ -31,7 +31,7 @@ export default function App() {
     if(data.length == 28 && type == "qr"){  //Without internet access, this is enough for now (user UID length)
       setData(data)
       console.log("QR-koodinluku onnistui!") //Motor should turn on: change command back to OFF when a certain time passes on arduino side
-      sendCommand("ON") // and handle turning motor so the gate is closed again
+      sendCommand("OPEN") // and handle turning motor so the gate is closed again
       
     } else{
       setData("Vääränlainen tieto luettu:"+data)
@@ -102,8 +102,8 @@ export default function App() {
       
       <Text>Päivitä portin asento manuaalisesti</Text>
 
-      <Button title="ON" onPress={() => sendCommand("ON")} />
-      <Button title="OFF" onPress={() => sendCommand("OFF")} />
+      <Button title="OPEN" onPress={() => sendCommand("OPEN")} />
+      <Button title="CLOSED" onPress={() => sendCommand("CLOSED")} />
 
       <Button title="Check status" onPress={() => sendCommand("STATE")} />
       <Text>Pääsyportin tila: {status}</Text>
