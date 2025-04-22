@@ -37,7 +37,7 @@ void closeDoor() {
   State = "CLOSED";  //Turn motor back to original state: Closed
   digitalWrite(Relay_PIN, HIGH);
   //delay(135);  //CLOSING SEQUENCE
-  delay(500); //Perfect delay to make a loop: gate door returns to place where it can be used opened again from
+  delay(565); //Perfect delay to make a loop: gate door returns to place where it can be used opened again from
   digitalWrite(Relay_PIN, LOW);
   server.send(200, "text/plain", "CLOSED");
 }
@@ -55,6 +55,7 @@ void handleRoot() {
     String command = server.arg("command");
 
     if (command == "OPEN") {
+      delay(2000);
       openDoor();
       delay(10000);  //HOLD DOOR OPEN -SEQUENCE
       closeDoor();

@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Alert, Button, StyleSheet, Text, View } from 'react-native';
 import axios from "axios"
 import { Camera, CameraView } from 'expo-camera';
@@ -15,6 +15,8 @@ export default function App() {
   const [scanned, setScanned] = useState(false)
   const [data, setData] = useState('')
 
+  const scannerEnabled = useRef(true)
+
   
 
   const askForCameraPermission = async () => {
@@ -26,17 +28,20 @@ export default function App() {
   }, [])
 
   const handleQRCodeScan = ({type, data}) => {
-    setScanned(true)
+    if(!scannerEnabled.current) return;
     console.log(`Type: ${type} \nData: ${data}`)
-    if(data.length == 28 && type == "qr"){  //Without internet access, this is enough for now (user UID length)
+    if(data.length == 28 && type == "qr" && scanned == false){  //Without internet access, this is enough for now (user UID length)
+      scannerEnabled.current = false
+      setScanned(true)
       setData(data)
       console.log("QR-koodinluku onnistui!") //Motor should turn on: change command back to OFF when a certain time passes on arduino side
       sendCommand("OPEN") // and handle turning motor so the gate is closed again
       
     } else{
       setData("Vääränlainen tieto luettu:"+data)
+      scannerEnabled.current = false
     }
-    setTimeout(() => {setScanned(false)}, 3000)
+    setTimeout(() => {setScanned(false); scannerEnabled.current = true}, 3000)
   }
 
   // Command sending functionality for arduino via WiFi connection
